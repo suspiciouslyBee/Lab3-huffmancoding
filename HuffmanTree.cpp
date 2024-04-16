@@ -130,26 +130,40 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 
 	char currentLetter = 0;
 
-	while (frequencyText.size() > 0) {
+	//really dumb code that somehow compiles
+
+	while (frequencyText.size() > 0) { //basically while not empty
 
 		currentLetter = frequencyText.at(0);
-		string singleDamnLetter{ currentLetter };	//WHY WTF THIS
+
+		//one and done to make a new binary node with the unique character and
+		//its number of occurrances
 
 		nodes.push(
-			new BinaryNode(singleDamnLetter,
+			new BinaryNode(string{currentLetter},
 				std::count(frequencyText.begin(), frequencyText.end(),
 					currentLetter)
 			)
 		);
 
+		//the letter has outlived its purpose, tell the computer to cull it
+		//string is passed by value, so can do whatever with it
+
 		frequencyText.erase(
 			std::remove(
-				frequencyText.begin(), frequencyText.end(),
-				currentLetter)
+				frequencyText.begin(), frequencyText.end(),currentLetter
+			)
 		);
+
+		//now the size will be decreased, and we loop again
 	}
 
 
+	/*
+	* at this point we now have the raw occurrance table, and now we need to
+	* make "super nodes" that are combinations of the two, starting from the
+	* top two.
+	*/
 
 
 
