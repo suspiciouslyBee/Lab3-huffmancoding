@@ -103,11 +103,44 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 }
 
 HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
+	//We need to begin with building a table of frequencies with the string
 	priority_queue<HuffmanTree::BinaryNode*,
 		vector<HuffmanTree::BinaryNode*>,
 		compareBinaryNodes > nodes;
+	//This Priority queue automatically sorts by number of occurances
 
-	// need to write code	
+	/*
+	* We need to store each letter into a node, get the number of occurances it
+	* has, then made a new BinaryNode to store it. we can then push it into the
+	* priority queue, which will sort it by weight (hopefully pushing weight at
+	* the bottom)
+	* 
+	* We scan the cString charcter by character, with each new character 
+	* calling new dynamic memory and storing it there. This will be garbage and
+	* unoptimized. Too bad.
+	* 
+	* find the first unknown character, start making a count, scan entire thing
+	* I am tainted: there was a StackOverflow that gave me both a hint, but
+	* also showed an explanation why to do erase(remove): 
+	* https://stackoverflow.com/questions/5891610/how-to-remove-certain-characters-from-a-string-in-c
+	*/
+
+	BinaryNode* foundLetter;
+	int count = 0;
+	char currentLetter = 0;
+	int i = 0;
+
+	while (frequencyText.size() >= 0) {
+		currentLetter = frequencyText.at(i);
+		count = std::count(frequencyText.begin(), frequencyText.end(),
+			currentLetter);
+		string singleDamnLetter{ currentLetter };
+		foundLetter = new BinaryNode(singleDamnLetter, count);
+	}
+
+
+
+	
 
 	return nodes.top();
 }

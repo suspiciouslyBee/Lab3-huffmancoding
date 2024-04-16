@@ -57,14 +57,13 @@ int main() {
 
 	// SUGGESTION: write and test the functions in the order called below
 	//         (some of the functions may need to call other private functions)
-
-	//Test 1        
-	//cout << "\n\nTest 1\n";
-	//cout << "\n\nBuilding the tree from: HHHHEELLLLLLLOO WOOOOORRLLLLLLDP\n";
-	//HuffmanTree tree("HHHHEELLLLLLLOO WOOOOORRLLLLLLDP");
-	//
-	//cout << "\n\nprintTree: \n";
-	//tree.printTree();
+       
+	cout << "\n\ntest 1\n";
+	cout << "\n\nbuilding the tree from: hhhheellllllloo wooooorrlllllldp\n";
+	HuffmanTree tree("hhhheellllllloo wooooorrlllllldp");
+	
+	cout << "\n\nprinttree: \n";
+	tree.printTree();
 	//
 	//cout << "\n\nprintCodes:\n";
 	//tree.printCodes();

@@ -13,6 +13,16 @@ class HuffmanTree : HuffmanTreeInterface {
 private:
 	
 	const int BITMASK[8] = { 1 , 2, 4 , 8,  16,  32,  64,  128 };
+	/*
+	*Note to self:
+	* -000001
+	* -000010
+	* -000100
+	* -001000
+	* -010000
+	* -100000
+	* so on and so forth
+	*/
 
 	class BinaryNode 	{
 	public:
