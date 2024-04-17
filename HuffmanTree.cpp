@@ -170,24 +170,31 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 
 	BinaryNode* first = nullptr;
 	BinaryNode* second = nullptr;
+	while (nodes.size() > 1) {
 
-	first = nodes.top();
-	nodes.pop();
-	second = nodes.top();
-	nodes.pop();
+		//we need to grab/remove the smallest elements which will be at root
+		first = nodes.top();
+		nodes.pop();
+		second = nodes.top();
+		nodes.pop();
 
-	nodes.push(new BinaryNode(
-		first->element + second->element,
-		first->frequency + second->frequency,
-		first,
-		second)
-	); //repeat until there is one node.
+		//then we can now make the "super node" by constructing a combo
+
+		nodes.push(new BinaryNode(
+			first->element + second->element,
+			first->frequency + second->frequency,
+			first,
+			second)
+		); 
+		
+		//priority queue will push the next smallest one to the top
+		//repeat until there is one node.
+	}
 
 
 
 
-
-	return nodes.top();
+	return nodes.top(); //our tree will now be complete
 }
 
 HuffmanTree::HuffmanTree(string frequencyText)
