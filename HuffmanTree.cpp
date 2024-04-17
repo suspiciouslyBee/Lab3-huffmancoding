@@ -163,7 +163,27 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 	* at this point we now have the raw occurrance table, and now we need to
 	* make "super nodes" that are combinations of the two, starting from the
 	* top two.
+	* 
+	* Pop the first two from root, make a "super node" with those nodes as a
+	* child. (so constructing setting left and right) then inserting.
 	*/
+
+	BinaryNode* first = nullptr;
+	BinaryNode* second = nullptr;
+
+	first = nodes.top();
+	nodes.pop();
+	second = nodes.top();
+	nodes.pop();
+
+	nodes.push(new BinaryNode(
+		first->element + second->element,
+		first->frequency + second->frequency,
+		first,
+		second)
+	); //repeat until there is one node.
+
+
 
 
 
