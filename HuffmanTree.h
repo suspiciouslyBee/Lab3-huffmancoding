@@ -67,6 +67,8 @@ private:
 	
 	void rebuildTree(BinaryNode * node, string element, string codedRoute);
 	void rebuildTree(ifstream & file);
+	string buildBinary(BinaryNode* current);
+
 
 	BinaryNode * buildTree(string frequencyText);
 	bool getBit(unsigned char byte, int position) const;

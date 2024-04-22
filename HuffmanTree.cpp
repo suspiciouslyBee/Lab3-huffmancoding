@@ -73,10 +73,27 @@ void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out, string code) c
 	// need to write code
 }
 
+int HuffmanTree::resolveCharFromHufftree(char element) {
+	//resolves a raw integer (as a binary)
+	int result = 0;
+}
+
+string HuffmanTree::parseIntBinaryToString(int element) {
+	
+}
+
 
 void HuffmanTree::saveTree(BinaryNode* current, string code)
 {
+	this->root = current;
+	for (char currentChar : code) {
+		
+	}
 	// need to write code
+}
+
+string HuffmanTree::buildBinary(BinaryNode* current) {
+
 }
 
 // writes tree information to file so the tree can be rebuilt when unzipping
@@ -181,7 +198,7 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 		//then we can now make the "super node" by constructing a combo
 
 		nodes.push(new BinaryNode(
-			first->element + second->element,
+			first->element + second->element, 
 			first->frequency + second->frequency,
 			first,
 			second)
@@ -200,7 +217,7 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 HuffmanTree::HuffmanTree(string frequencyText)
 {
 	root = buildTree(frequencyText);
-	//saveTree(root, string());   // build the lookupTable for codes...can write later
+	saveTree(root, frequencyText); 
 }
 
 HuffmanTree::HuffmanTree(ifstream& frequencyStream) {
