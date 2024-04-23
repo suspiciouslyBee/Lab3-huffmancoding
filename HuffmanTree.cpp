@@ -1,5 +1,10 @@
 //#include "stdafx.h"
 
+/*
+* Instructor Provided Huffman Tree, edited with implemented functions. Adapted
+* to Lab 3 Requirements.
+*/
+
 #include <string>
 #include <vector>
 #include <fstream> 
@@ -73,21 +78,49 @@ void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out, string code) c
 	// need to write code
 }
 
-int HuffmanTree::resolveCharFromHufftree(char element) {
-	//resolves a raw integer (as a binary)
-	int result = 0;
+string HuffmanTree::IntBinToStr(int element) {
+	//temporary function to parse an element into a string
+	string returnStr = "";
+
+	if (element < 1) {
+		return returnStr = "INVALID ELEMENT";
+	}
+
+	if (element == 0) {
+		returnStr = "0";
+		return returnStr;
+	}
+
+	for (int i = 1; (element >> i) > 0; i++) {
+		returnStr += (element & 1) ? "1" : "0";
+	}
+
+	return returnStr;
 }
 
-string HuffmanTree::parseIntBinaryToString(int element) {
-	
+void HuffmanTree::refreshTable(char element) {
+	int route;
+
 }
 
 
 void HuffmanTree::saveTree(BinaryNode* current, string code)
 {
+
+
 	this->root = current;
+
+	if (current->left) {
+
+	}
+
+	if (current->right) {
+
+	}
+
+
 	for (char currentChar : code) {
-		
+
 	}
 	// need to write code
 }
@@ -157,7 +190,7 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 		//its number of occurrances
 
 		nodes.push(
-			new BinaryNode(string{currentLetter},
+			new BinaryNode(string{ currentLetter },
 				std::count(frequencyText.begin(), frequencyText.end(),
 					currentLetter)
 			)
@@ -168,7 +201,7 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 
 		frequencyText.erase(
 			std::remove(
-				frequencyText.begin(), frequencyText.end(),currentLetter
+				frequencyText.begin(), frequencyText.end(), currentLetter
 			)
 		);
 
@@ -180,7 +213,7 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 	* at this point we now have the raw occurrance table, and now we need to
 	* make "super nodes" that are combinations of the two, starting from the
 	* top two.
-	* 
+	*
 	* Pop the first two from root, make a "super node" with those nodes as a
 	* child. (so constructing setting left and right) then inserting.
 	*/
@@ -198,12 +231,12 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 		//then we can now make the "super node" by constructing a combo
 
 		nodes.push(new BinaryNode(
-			first->element + second->element, 
+			first->element + second->element,
 			first->frequency + second->frequency,
 			first,
 			second)
-		); 
-		
+		);
+
 		//priority queue will push the next smallest one to the top
 		//repeat until there is one node.
 	}
@@ -217,7 +250,7 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 HuffmanTree::HuffmanTree(string frequencyText)
 {
 	root = buildTree(frequencyText);
-	saveTree(root, frequencyText); 
+	saveTree(root, frequencyText);
 }
 
 HuffmanTree::HuffmanTree(ifstream& frequencyStream) {
