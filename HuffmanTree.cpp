@@ -57,11 +57,8 @@ void HuffmanTree::printBinary(vector<char> bytes, std::ostream& out) const
 
 string HuffmanTree::getCode(char letter) const
 {
-	string code = "";
-
-	// need to write code
-
-	return code;
+	//we're just gonna grab the code from the unordered map..
+	return codeLookup.at(letter);
 }
 
 void HuffmanTree::makeEmpty(BinaryNode*& t) {
@@ -70,14 +67,29 @@ void HuffmanTree::makeEmpty(BinaryNode*& t) {
 
 void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
 {
-	// need to write code
+	if(node->left){
+		printTree(node->left, out);
+	}
+		out << node->element << " with frequency: " << node->frequency;
+	if(node->right){
+		printTree(node->right, out);
+	}
 }
 
 void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out, string code) const
 {
-	// need to write code
+	if(node->left){
+		code += "0";
+	}
+	if(node->right == nullptr){
+		out << node->element << " has code " << code;
+	}
+	if(node->right){
+		code += "1";
+	}
+	return;
 }
-
+/*
 string HuffmanTree::IntBinToStr(int element) {
 	//temporary function to parse an element into a string
 	string returnStr = "";
@@ -98,37 +110,48 @@ string HuffmanTree::IntBinToStr(int element) {
 
 	return returnStr;
 }
-
-void HuffmanTree::refreshTable(char element) {
-	int route;
-
-}
+*/
 
 
 void HuffmanTree::saveTree(BinaryNode* current, string code)
 {
+	//build the unordered map in the hufftree
 
+	/*
+	the M.O. here is to build the unordered map tree. We need to recursively 
+	take the frequency text, then recursively move down to a leaf. when we have
+	found a leaf, we can then take the key value of the node and pop that from
+	the string. this is probably horribly inefficient but im litterally writing
+	this in Canada rn so i dont care. it just has to work. sorry lonnie
+	*/
 
-	this->root = current;
-
+	//first thing we need to do is get the hell to the bottom. doesnt matter
+	//what order
 	if (current->left) {
-
+		code += "0";
+		this->saveTree(current->left, code);
 	}
-
 	if (current->right) {
-
+		code += "1";
+		this->saveTree(current->right, code);
 	}
 
 
-	for (char currentChar : code) {
+	//oh god
+	//yes I KNOW its implied already, but current code flow would execute this
+	//on internal nodes without a check. we need to insert the code only for 
+	//children
 
+	if((current->left == nullptr) || (current->right == nullptr)){
+		codeLookup[current->element[0]] = code;
 	}
-	// need to write code
+	
 }
-
+/*
 string HuffmanTree::buildBinary(BinaryNode* current) {
 
 }
+*/
 
 // writes tree information to file so the tree can be rebuilt when unzipping
 void HuffmanTree::saveTree(std::ostream& compressedFileStream)
