@@ -60,6 +60,7 @@ void HuffmanTree::printBinary(vector<char> bytes, std::ostream& out) const
 string HuffmanTree::getCode(char letter) const
 {
 	//we're just gonna grab the code from the unordered map..
+	tolower(letter); //dodgy fix
 	return codeLookup.at(letter);
 }
 
@@ -269,10 +270,10 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 
 
 		nodes.push(new BinaryNode(
-			second->element + first->element ,
+			first->element + second->element ,
 			second->frequency + first->frequency ,
-			second,
-			first)
+			first,
+			second)
 		);
 
 		//priority queue will push the next smallest one to the top
