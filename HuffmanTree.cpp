@@ -1,9 +1,11 @@
 //#include "stdafx.h"
 
-/*
-* Instructor Provided Huffman Tree, edited with implemented functions. Adapted
-* to Lab 3 Requirements.
-*/
+/**
+ * Instructor Provided Huffman Tree, edited with implemented functions. Adapted 
+ * to Lab 3 Requirements. 
+ * 
+ * 
+ */
 
 #include <string>
 #include <vector>
@@ -70,9 +72,12 @@ void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
 	if(node->left){
 		printTree(node->left, out);
 	}
-		out << node->element << " with frequency: " << node->frequency;
 	if(node->right){
 		printTree(node->right, out);
+	}
+		if(node->left == nullptr || node->right == nullptr){
+		out << "\'" << node->element
+		<< "\' with frequency: " << node->frequency << endl;
 	}
 }
 
@@ -82,7 +87,7 @@ void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out, string code) c
 		code += "0";
 	}
 	if(node->right == nullptr){
-		out << node->element << " has code " << code;
+		out << "\'" << node->element << "\' has code " << code << endl;
 	}
 	if(node->right){
 		code += "1";
@@ -177,10 +182,13 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 }
 
 HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
-	//We need to begin with building a table of frequencies with the string
-	priority_queue<HuffmanTree::BinaryNode*,
-		vector<HuffmanTree::BinaryNode*>,
-		compareBinaryNodes > nodes;
+
+	priority_queue<
+		HuffmanTree::BinaryNode*, 
+		vector<HuffmanTree::BinaryNode*>, 
+		compareBinaryNodes
+	>
+	nodes;
 	//This Priority queue automatically sorts by number of occurances
 
 	/*
@@ -226,7 +234,8 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 		frequencyText.erase(
 			std::remove(
 				frequencyText.begin(), frequencyText.end(), currentLetter
-			)
+			),
+			frequencyText.end()
 		);
 
 		//now the size will be decreased, and we loop again
@@ -244,21 +253,25 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 
 	BinaryNode* first = nullptr;
 	BinaryNode* second = nullptr;
-	while (nodes.size() > 1) {
+	BinaryNode* parent = nullptr;
+	while (nodes.size() >= 2) {
 
 		//we need to grab/remove the smallest elements which will be at root
 		first = nodes.top();
 		nodes.pop();
 		second = nodes.top();
 		nodes.pop();
-
+		cout << "Node 1: " << first->element << " " << first->frequency << endl;
+		cout << "Node 2: " << second->element << " " << second->frequency << endl;
 		//then we can now make the "super node" by constructing a combo
 
+
+
 		nodes.push(new BinaryNode(
-			first->element + second->element,
-			first->frequency + second->frequency,
-			first,
-			second)
+			second->element + first->element ,
+			second->frequency + first->frequency ,
+			second,
+			first)
 		);
 
 		//priority queue will push the next smallest one to the top
@@ -296,15 +309,16 @@ HuffmanTree::~HuffmanTree()
 // print out the char and its encoding
 void HuffmanTree::printCodes(std::ostream& out) const
 {
-	// need to write code
-	// calls recursive function
+	string dummy = "";
+	printCodes(root, out, dummy);
+	return;
 }
 
 // prints out the char and frequency
 void HuffmanTree::printTree(std::ostream& out) const
 {
-	// need to write code
-	// calls recursive function
+	printTree(root, out);
+	return;
 }
 
 void HuffmanTree::makeEmpty()

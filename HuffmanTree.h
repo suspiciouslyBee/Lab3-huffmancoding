@@ -49,7 +49,7 @@ private:
 		{
 			return p1->frequency > p2->frequency;
 		}
-	};	// end of compareBinaryNodes struct Functor
+	};	// end of compareBinaryNodes struct Functor 
 
 	BinaryNode *root = nullptr;
 	char EOFCharacter = 0;
@@ -96,3 +96,7 @@ public:
 					  bool buildTree = true);	
 
 };	// end of HuffmanTree class
+
+
+
+

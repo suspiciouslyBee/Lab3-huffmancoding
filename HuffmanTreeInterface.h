@@ -9,7 +9,7 @@ class HuffmanTreeInterface {
 private:
 public:
 	HuffmanTreeInterface() {};
-	HuffmanTreeInterface(std::string frequecyText) {};
+	HuffmanTreeInterface(std::string frequencyText) {};
 	HuffmanTreeInterface(const HuffmanTreeInterface& rhs) {};
 	HuffmanTreeInterface(HuffmanTreeInterface&& rhs) noexcept {};
 	virtual ~HuffmanTreeInterface() {};
