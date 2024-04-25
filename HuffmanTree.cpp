@@ -1,8 +1,12 @@
 //#include "stdafx.h"
 
 /**
- * Instructor Provided Huffman Tree, edited with implemented functions. Adapted 
- * to Lab 3 Requirements. 
+ * Programmer: June
+ * 
+ * Class: CS233
+ * 
+ * Instructor Provided Huffman Tree, edited with implemented functions for Lab 3
+ * Requirements. 
  * 
  * 
  */
@@ -60,8 +64,17 @@ void HuffmanTree::printBinary(vector<char> bytes, std::ostream& out) const
 string HuffmanTree::getCode(char letter) const
 {
 	//we're just gonna grab the code from the unordered map..
-	tolower(letter); //dodgy fix
-	return codeLookup.at(letter);
+	//assumption: normalizing to lowercase (for now)
+	string returnStr;
+
+	
+	try{
+		returnStr = codeLookup.at(tolower(letter));
+	}
+	catch(out_of_range &e){
+		return "NOT FOUND";
+	}
+	return codeLookup.at(tolower(letter));
 }
 
 void HuffmanTree::makeEmpty(BinaryNode*& t) {
@@ -131,27 +144,30 @@ void HuffmanTree::saveTree(BinaryNode* current, string code)
 	the string. this is probably horribly inefficient but im litterally writing
 	this in Canada rn so i dont care. it just has to work. sorry lonnie
 	*/
+	
+
 
 	//first thing we need to do is get the hell to the bottom. doesnt matter
 	//what order
 	if (current->left) {
-		code += "0";
-		this->saveTree(current->left, code);
+		saveTree(current->left, code + "0");
+	}
+	if((current->left == nullptr) || (current->right == nullptr)){
+		codeLookup[current->element[0]] = code;
 	}
 	if (current->right) {
-		code += "1";
-		this->saveTree(current->right, code);
+		saveTree(current->right, code + "1");
 	}
 
+
+	
 
 	//oh god
 	//yes I KNOW its implied already, but current code flow would execute this
 	//on internal nodes without a check. we need to insert the code only for 
 	//children
 
-	if((current->left == nullptr) || (current->right == nullptr)){
-		codeLookup[current->element[0]] = code;
-	}
+
 	
 }
 /*
@@ -288,8 +304,10 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 
 HuffmanTree::HuffmanTree(string frequencyText)
 {
+	string blank = "";
 	root = buildTree(frequencyText);
-	saveTree(root, frequencyText);
+	printCodes(root, cout, blank);
+	saveTree(root, blank);
 }
 
 HuffmanTree::HuffmanTree(ifstream& frequencyStream) {
@@ -330,9 +348,13 @@ void HuffmanTree::makeEmpty()
 }
 
 string HuffmanTree::decode(vector<char> encodedBytes) {
-	string decoded;
+	string decoded{encodedBytes.at(0)};
 
-	// need to write code
+	//bruteforce time. ouch.
+
+	
+	
+
 
 	return decoded;
 }
@@ -342,9 +364,15 @@ vector<char> HuffmanTree::encode(string stringToEncode)
 	stringToEncode.push_back(EOFCharacter); // needed when encoding message for file I/O
 
 	vector<char> encoded;
+	string encodedStr = ""; //garbage but i need something working
+	for(int i = 0; i < stringToEncode.length() - 1; i++){
+		encodedStr += getCode(stringToEncode.at(i));
+	}
 
-	// need to write code
-
+	//convert the string to vector array
+	for(int i = encodedStr.length() -1; i >= 0; i--){
+		encoded.push_back(encodedStr.at(i));
+	}
 	return encoded;
 }
 

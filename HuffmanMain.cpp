@@ -69,19 +69,19 @@ int main() {
 	tree.printCodes();
 	cout << endl << endl; 
 
-	//cout << "Code L :" <<tree.getCode('L') << endl;
-	//cout << "Code D :" << tree.getCode('D') << endl;
+	cout << "Code L :" <<tree.getCode('L') << endl;
+	cout << "Code D :" << tree.getCode('D') << endl;
 
 
 	//Test 2
-	//cout << "\n\nTest 2\n";
-	//vector<char> encoded = tree.encode("HELP"); 
-	//tree.printCodes();
+	cout << "\n\nTest 2\n";
+	vector<char> encoded = tree.encode("HELP"); 
+	tree.printCodes();
 	//  don't call for lab:  tree.printBinary(encoded);  // for lab, instead output chars inside encoded
-	//cout << endl;
+	cout << endl;
 	//
-	//cout << tree.decode(encoded) << ":" << endl;
-	//system("pause");  // LAB 3: Should run up to here with the above functions working with chars '1' and '0' 
+	cout << tree.decode(encoded) << ":" << endl;
+	system("pause");  // LAB 3: Should run up to here with the above functions working with chars '1' and '0' 
 						//			instead of making the changes at the binary level
 
 	//Test 3
