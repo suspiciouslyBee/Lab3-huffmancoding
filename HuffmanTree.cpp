@@ -84,14 +84,15 @@ void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
 void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out, string code) const
 {
 	if(node->left){
-		code += "0";
+		printCodes(node->left, out, code + "0");
 	}
 	if(node->right == nullptr){
 		out << "\'" << node->element << "\' has code " << code << endl;
 	}
 	if(node->right){
-		code += "1";
+		printCodes(node->right, out, code + "1");
 	}
+	
 	return;
 }
 /*

@@ -64,10 +64,10 @@ int main() {
 	
 	cout << "\n\nprinttree: \n";
 	tree.printTree();
-	//
-	//cout << "\n\nprintCodes:\n";
-	//tree.printCodes();
-	//cout << endl << endl; 
+	
+	cout << "\n\nprintCodes:\n";
+	tree.printCodes();
+	cout << endl << endl; 
 
 	//cout << "Code L :" <<tree.getCode('L') << endl;
 	//cout << "Code D :" << tree.getCode('D') << endl;
