@@ -82,7 +82,8 @@ string HuffmanTree::IntBinToStr(int element) {
 	//temporary function to parse an element into a string
 	string returnStr = "";
 
-	if (element < 1) {
+	if (element < 0) {
+		//we do not wa
 		return returnStr = "INVALID ELEMENT";
 	}
 
