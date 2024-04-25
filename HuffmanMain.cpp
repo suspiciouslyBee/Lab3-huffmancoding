@@ -1,5 +1,5 @@
-// HuffmanCoding.cpp : Defines the entry point for the console application.
-//
+// HuffmanCoding.cpp: unit test for HuffmanTree, part of Lab 3
+// Programmer :June
 
 
 #include <string>
@@ -14,45 +14,6 @@ using namespace std;
 
 int main() {
 
-	// example code for priority_queue....play with it and then remove/comment out
-	cout << "priority_queue test area: \n";
-	priority_queue<int, vector<int>, greater<int> > pq;
-
-	pq.push(111);
-	pq.push(1111);
-	pq.push(1011);
-	pq.push(100);
-	pq.push(1110);
-	pq.push(101);
-
-	cout << "Top: " << pq.top() << endl;
-	pq.push(10);
-	cout << "New Top: " << pq.top() << endl;
-
-	while (!pq.empty()) {
-		cout << pq.top() << endl;
-		pq.pop();
-	}
-	cout << endl << endl;
-
-	// example code for unordered_map....play with it and then remove/comment out
-	//  an unordered_map can be used to store the char and its encoded 
-	//  values after you have built the tree
-	cout << "unordered_map test area: \n";
-	unordered_map<char, string> exampleMap;
-	exampleMap['a'] = "apple";			// creates a new entry if 'a' is not in the map and associates "apple" with 'a'
-	exampleMap['b'] = "ballon";
-	exampleMap['c'] = "compiler";
-	exampleMap['d'] = "10010";
-
-	cout << "c has: " << exampleMap['c'] << endl;
-
-	exampleMap['c'] = "changed";
-	for (auto pair : exampleMap) {
-		cout << pair.first << " = " << pair.second << endl;
-	}
-	cout << "Number of items stored in map: " << exampleMap.size();
-	cout << endl << endl;
 
 
 	// SUGGESTION: write and test the functions in the order called below
@@ -121,3 +82,63 @@ int main() {
 	return 0;
 }
 
+/*Output
+
+test 1
+
+
+building the tree from: hhhheellllllloo wooooorrlllllldp
+'l' has code 0
+'r' has code 1000
+'e' has code 1001
+'h' has code 101
+'d' has code 11000
+'p' has code 11001
+' ' has code 11010
+'w' has code 11011
+'o' has code 111
+
+
+printtree: 
+'l' with frequency: 13
+'r' with frequency: 2
+'e' with frequency: 2
+'h' with frequency: 4
+'d' with frequency: 1
+'p' with frequency: 1
+' ' with frequency: 1
+'w' with frequency: 1
+'o' with frequency: 7
+
+
+printCodes:
+'l' has code 0
+'r' has code 1000
+'e' has code 1001
+'h' has code 101
+'d' has code 11000
+'p' has code 11001
+' ' has code 11010
+'w' has code 11011
+'o' has code 111
+
+
+Code L :0
+Code D :11000
+
+
+Test 2
+'l' has code 0
+'r' has code 1000
+'e' has code 1001
+'h' has code 101
+'d' has code 11000
+'p' has code 11001
+' ' has code 11010
+'w' has code 11011
+'o' has code 111
+
+help:
+sh: line 1: pause: command not found
+
+sh: line 1: pause: command not found*/

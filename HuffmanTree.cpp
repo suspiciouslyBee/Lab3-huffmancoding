@@ -279,8 +279,14 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 		nodes.pop();
 		second = nodes.top();
 		nodes.pop();
-		cout << "Node 1: " << first->element << " " << first->frequency << endl;
-		cout << "Node 2: " << second->element << " " << second->frequency << endl;
+
+
+		//cout << "Node 1: " 
+		//	<< first->element << " " << first->frequency << endl;
+		//cout << "Node 2: " 
+		//<< second->element << " " << second->frequency << endl;
+
+		
 		//then we can now make the "super node" by constructing a combo
 
 
@@ -348,12 +354,41 @@ void HuffmanTree::makeEmpty()
 }
 
 string HuffmanTree::decode(vector<char> encodedBytes) {
-	string decoded{encodedBytes.at(0)};
 
-	//bruteforce time. ouch.
+	int i = 0;
+	BinaryNode* it = root;
+	string decoded = "";
+	//every use we 'discard' the character by moving our iterator forward
+	//take the top of the "stack", and that will guide us left or right
+	//then we need to do something when we hit the end
+	
+	//TODO: CLEAN ME.
 
-	
-	
+	while(i < encodedBytes.size() && 
+		(encodedBytes.at(i) == '0' || encodedBytes.at(i) == '1')){
+		
+		if(it == nullptr){
+			//OOB CHECK: WE SHOULDNT BE HERE
+			return "Failure.";
+		}
+
+		if((it->right != nullptr) || (it->left != nullptr)){ //check for children
+			if(encodedBytes.at(i)=='0'){
+				it = it->left;
+			}
+			if(encodedBytes.at(i)=='1'){
+				it = it->right;
+			}
+		} else {
+			//no children
+			decoded += it->element;
+			it = root;
+			i--;
+		}
+
+		i++;
+	}
+	decoded += it->element;
 
 
 	return decoded;
@@ -366,11 +401,12 @@ vector<char> HuffmanTree::encode(string stringToEncode)
 	vector<char> encoded;
 	string encodedStr = ""; //garbage but i need something working
 	for(int i = 0; i < stringToEncode.length() - 1; i++){
-		encodedStr += getCode(stringToEncode.at(i));
+		encodedStr = encodedStr + getCode(stringToEncode.at(i)) ;
 	}
 
 	//convert the string to vector array
-	for(int i = encodedStr.length() -1; i >= 0; i--){
+	for(int i = 0; i < encodedStr.length(); i++){
+
 		encoded.push_back(encodedStr.at(i));
 	}
 	return encoded;
