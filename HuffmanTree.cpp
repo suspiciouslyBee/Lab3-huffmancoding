@@ -67,14 +67,18 @@ string HuffmanTree::getCode(char letter) const
 	//assumption: normalizing to lowercase (for now)
 	string returnStr;
 
+	if (letter == '\0') {
+		return "";
+	}
+
 	
 	try{
-		returnStr = codeLookup.at(tolower(letter));
+		returnStr = codeLookup.at(letter);
 	}
 	catch(out_of_range &e){
-		return "NOT FOUND";
+		return "";
 	}
-	return codeLookup.at(tolower(letter));
+	return codeLookup.at(letter);
 }
 
 void HuffmanTree::makeEmpty(BinaryNode*& t) {
@@ -101,7 +105,7 @@ void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out, string code) c
 		printCodes(node->left, out, code + "0");
 	}
 	if(node->right == nullptr){
-		out << "\'" << node->element << "\' has code " << code << endl;
+		out << node->element << "::" << code << "|";
 	}
 	if(node->right){
 		printCodes(node->right, out, code + "1");
@@ -179,8 +183,11 @@ string HuffmanTree::buildBinary(BinaryNode* current) {
 // writes tree information to file so the tree can be rebuilt when unzipping
 void HuffmanTree::saveTree(std::ostream& compressedFileStream)
 {
-	// need to write code
-	// calls recursive function
+	//we need to dump unordered map
+	//first, we should clear the file
+	//compressedFileStream << printCodes()
+
+
 }
 
 
@@ -231,6 +238,9 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 	char currentLetter = 0;
 
 	//really dumb code that somehow compiles
+	
+	//push a terminator
+	nodes.push(new BinaryNode(string("STOP"), 1));
 
 	while (frequencyText.size() > 0) { //basically while not empty
 
@@ -316,6 +326,7 @@ HuffmanTree::HuffmanTree(string frequencyText)
 	saveTree(root, blank);
 }
 
+
 HuffmanTree::HuffmanTree(ifstream& frequencyStream) {
 
 	std::string frequencyText((std::istreambuf_iterator<char>(frequencyStream)),
@@ -323,7 +334,7 @@ HuffmanTree::HuffmanTree(ifstream& frequencyStream) {
 	frequencyStream.close();
 	if (frequencyText.size() > 0) {
 		root = buildTree(frequencyText);
-		//saveTree(root, string());   // build the lookupTable for codes
+		saveTree(root, string());   // build the lookupTable for codes
 	}
 }
 
@@ -363,14 +374,14 @@ string HuffmanTree::decode(vector<char> encodedBytes) {
 	//then we need to do something when we hit the end
 	
 	//TODO: CLEAN ME.
-
-	while(i < encodedBytes.size() && 
-		(encodedBytes.at(i) == '0' || encodedBytes.at(i) == '1')){
-		
 		if(it == nullptr){
 			//OOB CHECK: WE SHOULDNT BE HERE
-			return "Failure.";
+			return "Empty!";
 		}
+
+	while(it != nullptr && i < encodedBytes.size() && 
+		(encodedBytes.at(i) == '0' || encodedBytes.at(i) == '1')){
+		
 
 		if((it->right != nullptr) || (it->left != nullptr)){ //check for children
 			if(encodedBytes.at(i)=='0'){
@@ -381,13 +392,20 @@ string HuffmanTree::decode(vector<char> encodedBytes) {
 			}
 		} else {
 			//no children
+			if (it->element == "STOP") {
+				return decoded;
+			}
 			decoded += it->element;
 			it = root;
 			i--;
 		}
-
 		i++;
+
 	}
+	if (it->element == "STOP") {
+		return decoded;
+	}
+
 	decoded += it->element;
 
 
@@ -403,6 +421,9 @@ vector<char> HuffmanTree::encode(string stringToEncode)
 	for(int i = 0; i < stringToEncode.length() - 1; i++){
 		encodedStr = encodedStr + getCode(stringToEncode.at(i)) ;
 	}
+
+	//add the null terminator
+	encodedStr += getCode('\0');
 
 	//convert the string to vector array
 	for(int i = 0; i < encodedStr.length(); i++){
@@ -423,9 +444,28 @@ void HuffmanTree::uncompressFile(string compressedFileName,
 void HuffmanTree::compressFile(string compressToFileName,
 	string uncompressedFileName, bool buildNewTree) {
 	// need to write code	
+	ifstream uncompressedFile(uncompressedFileName, ios::in);
 
-	// NOTE: when opening the compressedFile, you need to open in 
-	//  binary mode for writing..hmmm..why is that?
+	if (buildNewTree) {
+		std::string frequencyText((std::istreambuf_iterator<char>(uncompressedFile)),
+			std::istreambuf_iterator<char>());    // builds the frequencyText by using STL iterators
+		uncompressedFile.close();
+		if (frequencyText.size() > 0) {
+			root = buildTree(frequencyText);
+			saveTree(root, string());   // build the lookupTable for codes
+		}
+	}
+	
+	ofstream compressedFile(compressToFileName, ios::out | ios::binary);
+
+	stringstream output;
+
+
+
+
+
+	
+
 }
 
 
