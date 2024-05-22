@@ -89,6 +89,7 @@ public:
 	void makeEmpty();
 
 	vector<char> encode(string stringToEncode);
+	string doubleEncode(vector<char> rawEncoded);
 	string decode(vector<char> endcodedBytes);	
 		
 	void uncompressFile(string compressedFileName, string uncompressedToFileName);

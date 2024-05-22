@@ -53,12 +53,12 @@ int main() {
 
 	//Test 3
 	//cout << "\n\nTest 3\n";
-	//std::ifstream frequencyStream("Bigo.txt");
-	//HuffmanTree tree2(frequencyStream);
+	std::ifstream frequencyStream("Bigo.txt");
+	HuffmanTree tree2(frequencyStream);
 	//tree2.printTree();
 	//tree2.printCodes();
 
-	//tree2.compressFile("BigO.bin", "Bigo.txt");
+	tree2.compressFile("BigO.bin", "Bigo.txt");
 	//tree2.printCodes();
 	//tree2.uncompressFile("BigO.bin", "BigORebuilt.txt");
 	//tree2.printTree();

@@ -110,7 +110,6 @@ void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out, string code) c
 	if(node->right){
 		printCodes(node->right, out, code + "1");
 	}
-	
 	return;
 }
 /*
@@ -433,6 +432,40 @@ vector<char> HuffmanTree::encode(string stringToEncode)
 	return encoded;
 }
 
+string HuffmanTree::doubleEncode(vector<char> rawEncoded)
+{
+	//fits the string of 0 and 1s
+	//for each element in char array, read it, then store. then increment the
+	//counter
+	//ASSUMES IT IS 1 OR 0!
+
+	//bitshift intermediate by something, then OR it
+	string doubleEncoded;
+	char byte = 0;
+	int byteIterator = (sizeof(char) * 8) - 1;
+	char binRep = 0;
+	int i = 0;
+
+	
+
+
+
+	for (int i = 0; i < rawEncoded.size(); i++) {
+
+		binRep = rawEncoded.at(i) - 48;
+		if (byteIterator < 0) {
+			doubleEncoded.push_back(byte);
+			byte = 0;
+			byteIterator = (sizeof(char) * 8) - 1;
+		}
+		binRep <<= byteIterator;
+		byte |= binRep;
+		byteIterator--;
+	}
+	return doubleEncoded;
+}
+
+
 void HuffmanTree::uncompressFile(string compressedFileName,
 	string uncompressedToFileName) {
 	// need to write code	
@@ -444,11 +477,15 @@ void HuffmanTree::uncompressFile(string compressedFileName,
 void HuffmanTree::compressFile(string compressToFileName,
 	string uncompressedFileName, bool buildNewTree) {
 	// need to write code	
-	ifstream uncompressedFile(uncompressedFileName, ios::in);
 
-	if (buildNewTree) {
+	/*The main jist is that we build a gigantic as hell string, then store it
+	* to the file
+	*/
+	ifstream uncompressedFile(uncompressedFileName, ios::in);
 		std::string frequencyText((std::istreambuf_iterator<char>(uncompressedFile)),
 			std::istreambuf_iterator<char>());    // builds the frequencyText by using STL iterators
+
+	if (buildNewTree) {
 		uncompressedFile.close();
 		if (frequencyText.size() > 0) {
 			root = buildTree(frequencyText);
@@ -460,11 +497,12 @@ void HuffmanTree::compressFile(string compressToFileName,
 
 	stringstream output;
 
+	printCodes(output);
+	output << "||";
 
+	output << doubleEncode(encode(frequencyText));
 
-
-
-	
+	compressedFile << output.rdbuf();
 
 }
 
