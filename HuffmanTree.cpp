@@ -198,11 +198,33 @@ void HuffmanTree::rebuildTree(BinaryNode* node, string element, string codedRout
 }
 
 void HuffmanTree::rebuildTree(ifstream& compressedFile) {
+
+
 	// read info from file
 	// use info to build tree
 
 	// need to write code
 	// calls recursive function
+
+
+	/*
+	* First we need to get the tree information from the file, with the header
+	* we have created. We will need to analyze the endpoints to make the program
+	* correctly reverse engineer. Afterwards, we will seek to the start of the
+	* file, and send that string into rebuild Tree.
+	*/
+
+	//REBUILDING FROM STR
+
+	/*
+	* There are a few things that are common between each node.
+	* Siblings will always be off by 1.
+	*/
+
+	
+
+
+
 }
 
 HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
@@ -362,6 +384,10 @@ void HuffmanTree::makeEmpty()
 	// need to write code
 	// calls recursive function	
 }
+
+
+
+
 
 string HuffmanTree::decode(vector<char> encodedBytes) {
 
