@@ -212,6 +212,8 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 	* we have created. We will need to analyze the endpoints to make the program
 	* correctly reverse engineer. Afterwards, we will seek to the start of the
 	* file, and send that string into rebuild Tree.
+	* 
+	* ASSUMES VALID STRUCTURE!
 	*/
 
 	//REBUILDING FROM STR
@@ -219,9 +221,66 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 	/*
 	* There are a few things that are common between each node.
 	* Siblings will always be off by 1.
+	* 
+	* Each node is seperated with a pipe "|", we will need to ensure that we 
+	* have some sort of escape sequence to ensure we don't have a divider
+	* 
+	* Each node we have stored contains just one element, except for the STOP
+	* node, which is essentially acting like a null terminator.
 	*/
 
-	
+	//LOAD INTO MEMORY
+	stringstream workingStrS;
+	int i = 0;
+	workingStrS << compressedFile.rdbuf();
+	string workingStr = workingStrS.str();
+	char window = 0;
+	string sequence;
+	string save;
+	int occurances = 0;
+	//ITERATE THROUGH THE STRING
+	int pipes = 0;
+	while (true) { //FIX ME
+
+		/*Start by looking through each poisiton on the string, then storing
+		* the
+		* 
+		* Store forward, including colons. like "a::", then remove the two
+		* ending colons, then parse the binary
+		*/
+		window = workingStr.at(i);
+		
+		sequence += workingStr.at(i);
+
+		if (window == ':') {
+			occurances++;
+			if (occurances == 2 && sequence.length() != 2) {
+				sequence.pop_back();
+				sequence.pop_back();
+				occurances = 0;
+				save = sequence;
+			}
+		}
+
+		if (window == '|') {
+			// this should break to the next item,
+			pipes++;
+
+			if (sequence.length() =< 1) {
+				//double pip
+
+			}
+
+			if(otherOcc == 3)
+		}
+
+
+
+		i++;
+	}
+
+
+	//we now have the direct index of the start of the actual encoded data
 
 
 
