@@ -339,6 +339,12 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 	}
 
 	workingStr.erase(workingStr.begin(), workingStr.begin() + (i - 1));
+	//this is going to be so terrible
+	//i want to keep that index position for decoding
+	//root is a dummy so what if we just
+
+	root->frequency = i - 1;
+
 
 	//we now have JUST the encoded data, and a rough framework to decode with
 
@@ -560,24 +566,25 @@ string HuffmanTree::decode(vector<char> encodedBytes) {
 }
 
 string HuffmanTree::decodeBinary(string encodedStr) {
+
 	int byteIterator = (sizeof(char) * 8) - 1;
 
 	string doubleDecoded;
 	int byteIterator = (sizeof(char) * 8) - 1;
 	char binMask = 1;
-	int i = 0;
-
-
-
 
 
 	for (int i = 0; i < encodedStr.size(); i++) {
 
 		while (byteIterator >= 0) {
+			binMask = 1;
 			binMask <<= byteIterator;
+			byteIterator--;
+			doubleDecoded += ((encodedStr.at(i) & binMask) + 48);
 		}
 
 		byteIterator = (sizeof(char) * 8) - 1;
+
 
 	}
 	return doubleDecoded;
