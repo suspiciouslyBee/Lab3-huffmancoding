@@ -89,6 +89,8 @@ public:
 	
 	void makeEmpty();
 
+	string decodeBinary(string encodedStr);
+
 	vector<char> encode(string stringToEncode);
 	string doubleEncode(vector<char> rawEncoded);
 	string decode(vector<char> endcodedBytes);	

@@ -2,13 +2,13 @@
 
 /**
  * Programmer: June
- * 
+ *
  * Class: CS233
- * 
+ *
  * Instructor Provided Huffman Tree, edited with implemented functions for Lab 3
- * Requirements. 
- * 
- * 
+ * Requirements.
+ *
+ *
  */
 
 #include <string>
@@ -71,11 +71,11 @@ string HuffmanTree::getCode(char letter) const
 		return "";
 	}
 
-	
-	try{
+
+	try {
 		returnStr = codeLookup.at(letter);
 	}
-	catch(out_of_range &e){
+	catch (out_of_range& e) {
 		return "";
 	}
 	return codeLookup.at(letter);
@@ -87,27 +87,46 @@ void HuffmanTree::makeEmpty(BinaryNode*& t) {
 
 void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
 {
-	if(node->left){
+	if (node->left) {
 		printTree(node->left, out);
 	}
-	if(node->right){
+	if (node->right) {
 		printTree(node->right, out);
 	}
-		if(node->left == nullptr || node->right == nullptr){
+	if (node->left == nullptr || node->right == nullptr) {
 		out << "\'" << node->element
-		<< "\' with frequency: " << node->frequency << endl;
+			<< "\' with frequency: " << node->frequency << endl;
 	}
 }
 
 void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out, string code) const
 {
-	if(node->left){
+	if (node->left) {
 		printCodes(node->left, out, code + "0");
 	}
-	if(node->right == nullptr){
-		out << node->element << "::" << code << "|";
+	if (node->right == nullptr) {
+		for (int i = 0; i < node->element.size(); i++) {
+			//we need to ensure we corectly print out escape chars BEFORE elem
+
+			switch (node->element.at(i)) {
+			case '//':
+				out << '//';
+				break;
+			case ':':
+				out << '//';
+				break;
+			default:
+				break;
+			}
+
+			out << node->element.at(i);
+
+		}
+
+
+		out << "::" << code << "::";
 	}
-	if(node->right){
+	if (node->right) {
 		printCodes(node->right, out, code + "1");
 	}
 	return;
@@ -141,13 +160,13 @@ void HuffmanTree::saveTree(BinaryNode* current, string code)
 	//build the unordered map in the hufftree
 
 	/*
-	the M.O. here is to build the unordered map tree. We need to recursively 
+	the M.O. here is to build the unordered map tree. We need to recursively
 	take the frequency text, then recursively move down to a leaf. when we have
 	found a leaf, we can then take the key value of the node and pop that from
 	the string. this is probably horribly inefficient but im litterally writing
 	this in Canada rn so i dont care. it just has to work. sorry lonnie
 	*/
-	
+
 
 
 	//first thing we need to do is get the hell to the bottom. doesnt matter
@@ -155,7 +174,7 @@ void HuffmanTree::saveTree(BinaryNode* current, string code)
 	if (current->left) {
 		saveTree(current->left, code + "0");
 	}
-	if((current->left == nullptr) || (current->right == nullptr)){
+	if ((current->left == nullptr) || (current->right == nullptr)) {
 		codeLookup[current->element[0]] = code;
 	}
 	if (current->right) {
@@ -163,7 +182,7 @@ void HuffmanTree::saveTree(BinaryNode* current, string code)
 	}
 
 
-	
+
 
 	//oh god
 	//yes I KNOW its implied already, but current code flow would execute this
@@ -171,7 +190,7 @@ void HuffmanTree::saveTree(BinaryNode* current, string code)
 	//children
 
 
-	
+
 }
 /*
 string HuffmanTree::buildBinary(BinaryNode* current) {
@@ -193,7 +212,37 @@ void HuffmanTree::saveTree(std::ostream& compressedFileStream)
 void HuffmanTree::rebuildTree(BinaryNode* node, string element, string codedRoute)
 {
 
+
 	// need to write code
+	if (node == nullptr) {
+		node = new BinaryNode("dummy");
+	}
+
+	for (int i = 0; i < codedRoute.size(); i++) {
+		switch (codedRoute.at(i)) {
+		case '0':
+			if (node->left == nullptr) {
+				node->left = new BinaryNode("dummy");
+				node = node->left;
+			}
+			break;
+		case '1':
+			if (node->right == nullptr) {
+				node->right = new BinaryNode("dummy");
+				node = node->right;
+			}
+			break;
+		default:
+			cout << "CORRUPT TABLE";
+			exit(-1);
+		}
+
+		//assume we are at a leaf
+
+	}
+
+		node->element = element;
+		return;
 
 }
 
@@ -212,7 +261,7 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 	* we have created. We will need to analyze the endpoints to make the program
 	* correctly reverse engineer. Afterwards, we will seek to the start of the
 	* file, and send that string into rebuild Tree.
-	* 
+	*
 	* ASSUMES VALID STRUCTURE!
 	*/
 
@@ -221,10 +270,10 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 	/*
 	* There are a few things that are common between each node.
 	* Siblings will always be off by 1.
-	* 
-	* Each node is seperated with a pipe "|", we will need to ensure that we 
+	*
+	* Each node is seperated with a pipe "|", we will need to ensure that we
 	* have some sort of escape sequence to ensure we don't have a divider
-	* 
+	*
 	* Each node we have stored contains just one element, except for the STOP
 	* node, which is essentially acting like a null terminator.
 	*/
@@ -235,52 +284,65 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 	workingStrS << compressedFile.rdbuf();
 	string workingStr = workingStrS.str();
 	char window = 0;
-	string sequence;
+	char escape = '\\';
+	char divider = ':';
+	string token;
 	string save;
 	int occurances = 0;
+	int previousTokenSize = 0;
 	//ITERATE THROUGH THE STRING
 	int pipes = 0;
+	vector<string> tokenPair;
+
 	while (true) { //FIX ME
 
 		/*Start by looking through each poisiton on the string, then storing
 		* the
-		* 
+		*
 		* Store forward, including colons. like "a::", then remove the two
 		* ending colons, then parse the binary
 		*/
+
 		window = workingStr.at(i);
-		
-		sequence += workingStr.at(i);
 
-		if (window == ':') {
-			occurances++;
-			if (occurances == 2 && sequence.length() != 2) {
-				sequence.pop_back();
-				sequence.pop_back();
-				occurances = 0;
-				save = sequence;
-			}
+		if (window != escape) {
+			//escape char triggered, assuming next char is a normal char
+			//move forward (UNSAFE)
+
+			i++;
 		}
 
-		if (window == '|') {
-			// this should break to the next item,
-			pipes++;
-
-			if (sequence.length() =< 1) {
-				//double pip
-
+		if (window == divider && workingStr.at(i + 1) == divider) {
+			//divider is sucessful, token is finished
+			if (token.size() <= 0) {
+				//empty, likely end of table
+				//set index to start of data
+				i += 2;
+				break;
 			}
 
-			if(otherOcc == 3)
+			tokenPair.push_back(token);
+			token.clear();
+
+			if (tokenPair.size() >= 2) {
+				rebuildTree(root, tokenPair.at(0), tokenPair.at(1));
+				tokenPair.clear();
+			}
+
+			i += 2;
 		}
 
 
+		token += workingStr.at(i);
 
 		i++;
 	}
 
+	workingStr.erase(workingStr.begin(), workingStr.begin() + (i - 1));
 
-	//we now have the direct index of the start of the actual encoded data
+	//we now have JUST the encoded data, and a rough framework to decode with
+
+
 
 
 
@@ -289,11 +351,11 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 
 	priority_queue<
-		HuffmanTree::BinaryNode*, 
-		vector<HuffmanTree::BinaryNode*>, 
+		HuffmanTree::BinaryNode*,
+		vector<HuffmanTree::BinaryNode*>,
 		compareBinaryNodes
 	>
-	nodes;
+		nodes;
 	//This Priority queue automatically sorts by number of occurances
 
 	/*
@@ -318,7 +380,7 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 	char currentLetter = 0;
 
 	//really dumb code that somehow compiles
-	
+
 	//push a terminator
 	nodes.push(new BinaryNode(string("STOP"), 1));
 
@@ -376,14 +438,14 @@ HuffmanTree::BinaryNode* HuffmanTree::buildTree(string frequencyText) {
 		//cout << "Node 2: " 
 		//<< second->element << " " << second->frequency << endl;
 
-		
+
 		//then we can now make the "super node" by constructing a combo
 
 
 
 		nodes.push(new BinaryNode(
-			first->element + second->element ,
-			second->frequency + first->frequency ,
+			first->element + second->element,
+			second->frequency + first->frequency,
 			first,
 			second)
 		);
@@ -456,25 +518,26 @@ string HuffmanTree::decode(vector<char> encodedBytes) {
 	//every use we 'discard' the character by moving our iterator forward
 	//take the top of the "stack", and that will guide us left or right
 	//then we need to do something when we hit the end
-	
+
 	//TODO: CLEAN ME.
-		if(it == nullptr){
-			//OOB CHECK: WE SHOULDNT BE HERE
-			return "Empty!";
-		}
+	if (it == nullptr) {
+		//OOB CHECK: WE SHOULDNT BE HERE
+		return "Empty!";
+	}
 
-	while(it != nullptr && i < encodedBytes.size() && 
-		(encodedBytes.at(i) == '0' || encodedBytes.at(i) == '1')){
-		
+	while (it != nullptr && i < encodedBytes.size() &&
+		(encodedBytes.at(i) == '0' || encodedBytes.at(i) == '1')) {
 
-		if((it->right != nullptr) || (it->left != nullptr)){ //check for children
-			if(encodedBytes.at(i)=='0'){
+
+		if ((it->right != nullptr) || (it->left != nullptr)) { //check for children
+			if (encodedBytes.at(i) == '0') {
 				it = it->left;
 			}
-			if(encodedBytes.at(i)=='1'){
+			if (encodedBytes.at(i) == '1') {
 				it = it->right;
 			}
-		} else {
+		}
+		else {
 			//no children
 			if (it->element == "STOP") {
 				return decoded;
@@ -496,21 +559,46 @@ string HuffmanTree::decode(vector<char> encodedBytes) {
 	return decoded;
 }
 
+string HuffmanTree::decodeBinary(string encodedStr) {
+	int byteIterator = (sizeof(char) * 8) - 1;
+
+	string doubleDecoded;
+	int byteIterator = (sizeof(char) * 8) - 1;
+	char binMask = 1;
+	int i = 0;
+
+
+
+
+
+	for (int i = 0; i < encodedStr.size(); i++) {
+
+		while (byteIterator >= 0) {
+			binMask <<= byteIterator;
+		}
+
+		byteIterator = (sizeof(char) * 8) - 1;
+
+	}
+	return doubleDecoded;
+
+
+}
 vector<char> HuffmanTree::encode(string stringToEncode)
 {
 	stringToEncode.push_back(EOFCharacter); // needed when encoding message for file I/O
 
 	vector<char> encoded;
 	string encodedStr = ""; //garbage but i need something working
-	for(int i = 0; i < stringToEncode.length() - 1; i++){
-		encodedStr = encodedStr + getCode(stringToEncode.at(i)) ;
+	for (int i = 0; i < stringToEncode.length() - 1; i++) {
+		encodedStr = encodedStr + getCode(stringToEncode.at(i));
 	}
 
 	//add the null terminator
 	encodedStr += getCode('\0');
 
 	//convert the string to vector array
-	for(int i = 0; i < encodedStr.length(); i++){
+	for (int i = 0; i < encodedStr.length(); i++) {
 
 		encoded.push_back(encodedStr.at(i));
 	}
@@ -531,7 +619,7 @@ string HuffmanTree::doubleEncode(vector<char> rawEncoded)
 	char binRep = 0;
 	int i = 0;
 
-	
+
 
 
 
@@ -567,8 +655,8 @@ void HuffmanTree::compressFile(string compressToFileName,
 	* to the file
 	*/
 	ifstream uncompressedFile(uncompressedFileName, ios::in);
-		std::string frequencyText((std::istreambuf_iterator<char>(uncompressedFile)),
-			std::istreambuf_iterator<char>());    // builds the frequencyText by using STL iterators
+	std::string frequencyText((std::istreambuf_iterator<char>(uncompressedFile)),
+		std::istreambuf_iterator<char>());    // builds the frequencyText by using STL iterators
 
 	if (buildNewTree) {
 		uncompressedFile.close();
@@ -577,13 +665,13 @@ void HuffmanTree::compressFile(string compressToFileName,
 			saveTree(root, string());   // build the lookupTable for codes
 		}
 	}
-	
+
 	ofstream compressedFile(compressToFileName, ios::out | ios::binary);
 
 	stringstream output;
 
 	printCodes(output);
-	output << "||";
+	output << "::";
 
 	output << doubleEncode(encode(frequencyText));
 
