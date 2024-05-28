@@ -652,6 +652,12 @@ void HuffmanTree::uncompressFile(string compressedFileName,
 
 	// NOTE: when opening the compressedFile, you need to open in 
 	//  binary mode for reading..hmmm..why is that?
+
+	ifstream compressedFile(compressedFileName, ios::in | ios::binary);
+	ofstream uncompressedFile(uncompressedToFileName, ios::out);
+
+	rebuildTree(compressedFile);
+	stringstream output;
 }
 
 void HuffmanTree::compressFile(string compressToFileName,
