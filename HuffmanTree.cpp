@@ -658,6 +658,19 @@ void HuffmanTree::uncompressFile(string compressedFileName,
 
 	rebuildTree(compressedFile);
 	stringstream output;
+	string rawData;
+
+	output << compressedFile.rdbuf();
+
+	rawData = output.str();
+
+	rawData.erase(rawData.begin(), rawData.begin() + root->frequency);
+
+	output.clear();
+
+	output << decodeBinary(rawData);
+
+	uncompressedFile << output.rdbuf();
 }
 
 void HuffmanTree::compressFile(string compressToFileName,
