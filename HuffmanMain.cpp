@@ -45,7 +45,7 @@ int main() {
 
 
 
-	system("pause");  // LAB 3: Should run up to here with the above functions working with chars '1' and '0' 
+	//system("pause");  // LAB 3: Should run up to here with the above functions working with chars '1' and '0' 
 						//			instead of making the changes at the binary level
 
 
@@ -55,14 +55,15 @@ int main() {
 	//cout << "\n\nTest 3\n";
 	std::ifstream frequencyStream("Bigo.txt");
 	HuffmanTree tree2(frequencyStream);
-	//tree2.printTree();
-	//tree2.printCodes();
+	tree2.printTree();
+	tree2.printCodes();
 
 	tree2.compressFile("BigO.bin", "Bigo.txt");
-	//tree2.printCodes();
-	//tree2.uncompressFile("BigO.bin", "BigORebuilt.txt");
-	//tree2.printTree();
-	//tree2.printCodes();
+	cout << endl << endl;
+	tree2.printCodes();
+	tree2.uncompressFile("BigO.bin", "BigORebuilt.txt");
+	tree2.printTree();
+	tree2.printCodes();
 
 	////Test 4
 	//cout << "\n\nTest 4\n";

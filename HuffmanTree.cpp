@@ -82,7 +82,17 @@ string HuffmanTree::getCode(char letter) const
 }
 
 void HuffmanTree::makeEmpty(BinaryNode*& t) {
-	// need to write code
+	if (t == nullptr) {
+		return;
+	}
+	if (t->left) {
+		makeEmpty(t->left);
+	}
+	if (t->right) {
+		makeEmpty(t->right);
+	}
+
+	delete t;
 }
 
 void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
@@ -101,6 +111,8 @@ void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
 
 void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out, string code) const
 {
+
+
 	if (node->left) {
 		printCodes(node->left, out, code + "0");
 	}
@@ -109,11 +121,11 @@ void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out, string code) c
 			//we need to ensure we corectly print out escape chars BEFORE elem
 
 			switch (node->element.at(i)) {
-			case '//':
-				out << '//';
+			case '/':
+				out << '/';
 				break;
 			case ':':
-				out << '//';
+				out << '/';
 				break;
 			default:
 				break;
@@ -213,10 +225,6 @@ void HuffmanTree::rebuildTree(BinaryNode* node, string element, string codedRout
 {
 
 
-	// need to write code
-	if (node == nullptr) {
-		node = new BinaryNode("dummy");
-	}
 
 	for (int i = 0; i < codedRoute.size(); i++) {
 		switch (codedRoute.at(i)) {
@@ -241,8 +249,8 @@ void HuffmanTree::rebuildTree(BinaryNode* node, string element, string codedRout
 
 	}
 
-		node->element = element;
-		return;
+	node->element = element;
+	return;
 
 }
 
@@ -279,23 +287,33 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 	*/
 
 	//LOAD INTO MEMORY
+	makeEmpty();
+	root = new BinaryNode("dummy");
 	stringstream workingStrS;
 	int i = 0;
 	workingStrS << compressedFile.rdbuf();
 	string workingStr = workingStrS.str();
 	char window = 0;
-	char escape = '\\';
+	char escape = '/';
 	char divider = ':';
 	string token;
 	string save;
-	int occurances = 0;
-	int previousTokenSize = 0;
+
+
 	//ITERATE THROUGH THE STRING
 	int pipes = 0;
 	vector<string> tokenPair;
+	bool currEscaped = false;
+	bool prevEscaped = false;
+
+
 
 	while (true) { //FIX ME
 
+
+		if (i == 143) {
+			cout << "lol";
+		}
 		/*Start by looking through each poisiton on the string, then storing
 		* the
 		*
@@ -303,16 +321,22 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 		* ending colons, then parse the binary
 		*/
 
-		window = workingStr.at(i);
-
-		if (window != escape) {
-			//escape char triggered, assuming next char is a normal char
-			//move forward (UNSAFE)
-
+		//check if we are escaped
+		if (workingStr.at(i) == '/') {
 			i++;
+			prevEscaped = true;
 		}
+		else {
+			prevEscaped = false;
+		}
+		
 
-		if (window == divider && workingStr.at(i + 1) == divider) {
+
+
+
+		if (!prevEscaped && workingStr.at(i) == divider
+			&& workingStr.at(i + 1) == divider) {
+
 			//divider is sucessful, token is finished
 			if (token.size() <= 0) {
 				//empty, likely end of table
@@ -330,11 +354,16 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 			}
 
 			i += 2;
+			if (workingStr.at(i) == '/') {
+				i++;
+				prevEscaped = true;
+			}
+			else {
+				prevEscaped = false;
+			}
 		}
 
-
 		token += workingStr.at(i);
-
 		i++;
 	}
 
@@ -502,12 +531,17 @@ void HuffmanTree::printCodes(std::ostream& out) const
 // prints out the char and frequency
 void HuffmanTree::printTree(std::ostream& out) const
 {
+	if (root != nullptr && root->element == "dummy") {
+		out << "Table freshly loaded from file! Frequency not init'd!\n";
+		out << "Index of raw data in file: " << root->frequency << endl;
+	}
 	printTree(root, out);
 	return;
 }
 
 void HuffmanTree::makeEmpty()
 {
+	makeEmpty(root);
 	// need to write code
 	// calls recursive function	
 }
@@ -567,7 +601,6 @@ string HuffmanTree::decode(vector<char> encodedBytes) {
 
 string HuffmanTree::decodeBinary(string encodedStr) {
 
-	int byteIterator = (sizeof(char) * 8) - 1;
 
 	string doubleDecoded;
 	int byteIterator = (sizeof(char) * 8) - 1;
@@ -657,6 +690,7 @@ void HuffmanTree::uncompressFile(string compressedFileName,
 	ofstream uncompressedFile(uncompressedToFileName, ios::out);
 
 	rebuildTree(compressedFile);
+	printTree();
 	stringstream output;
 	string rawData;
 
