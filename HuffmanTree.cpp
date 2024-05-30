@@ -68,7 +68,7 @@ string HuffmanTree::getCode(char letter) const
 	string returnStr;
 
 	if (letter == '\0') {
-		return "";
+		return codeLookup.at('\0');
 	}
 
 
@@ -179,7 +179,7 @@ void HuffmanTree::saveTree(BinaryNode* current, string code)
 	this in Canada rn so i dont care. it just has to work. sorry lonnie
 	*/
 
-
+	char elementSave = 0;
 
 	//first thing we need to do is get the hell to the bottom. doesnt matter
 	//what order
@@ -187,7 +187,11 @@ void HuffmanTree::saveTree(BinaryNode* current, string code)
 		saveTree(current->left, code + "0");
 	}
 	if ((current->left == nullptr) || (current->right == nullptr)) {
-		codeLookup[current->element[0]] = code;
+		elementSave = current->element[0];
+		if (current->element == "STOP") {
+			elementSave = '\0';
+		}
+		codeLookup[elementSave] = code;
 	}
 	if (current->right) {
 		saveTree(current->right, code + "1");
@@ -231,14 +235,14 @@ void HuffmanTree::rebuildTree(BinaryNode* node, string element, string codedRout
 		case '0':
 			if (node->left == nullptr) {
 				node->left = new BinaryNode("dummy");
-				node = node->left;
 			}
+			node = node->left;
 			break;
 		case '1':
 			if (node->right == nullptr) {
 				node->right = new BinaryNode("dummy");
-				node = node->right;
 			}
+			node = node->right;
 			break;
 		default:
 			cout << "CORRUPT TABLE";
@@ -303,15 +307,15 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 	//ITERATE THROUGH THE STRING
 	int pipes = 0;
 	vector<string> tokenPair;
-	bool currEscaped = false;
+	bool escaped = false;
 	bool prevEscaped = false;
+	bool eof = false;
 
 
+	while (!eof) { //FIX ME
 
-	while (true) { //FIX ME
 
-
-		if (i == 143) {
+		if (i == 448) {
 			cout << "lol";
 		}
 		/*Start by looking through each poisiton on the string, then storing
@@ -324,25 +328,21 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 		//check if we are escaped
 		if (workingStr.at(i) == '/') {
 			i++;
-			prevEscaped = true;
+			escaped = true;
 		}
-		else {
-			prevEscaped = false;
-		}
-		
 
 
 
 
-		if (!prevEscaped && workingStr.at(i) == divider
+		if (!escaped && workingStr.at(i) == divider
 			&& workingStr.at(i + 1) == divider) {
 
 			//divider is sucessful, token is finished
-			if (token.size() <= 0) {
+			if (workingStr.at(i + 2) == divider && workingStr.at(i + 3) == divider) {
 				//empty, likely end of table
 				//set index to start of data
 				i += 2;
-				break;
+				eof = true;
 			}
 
 			tokenPair.push_back(token);
@@ -353,18 +353,23 @@ void HuffmanTree::rebuildTree(ifstream& compressedFile) {
 				tokenPair.clear();
 			}
 
-			i += 2;
-			if (workingStr.at(i) == '/') {
-				i++;
-				prevEscaped = true;
+			if (workingStr.at(i + 2) == '/') {
+				i += 3;
 			}
-			else {
-				prevEscaped = false;
+			else if (eof) {
+				i += 2;
+			}
+			else{
+				i += 2;
 			}
 		}
 
+		escaped = false;
+
 		token += workingStr.at(i);
 		i++;
+
+
 	}
 
 	workingStr.erase(workingStr.begin(), workingStr.begin() + (i - 1));
@@ -585,6 +590,7 @@ string HuffmanTree::decode(vector<char> encodedBytes) {
 			decoded += it->element;
 			it = root;
 			i--;
+
 		}
 		i++;
 
@@ -609,11 +615,12 @@ string HuffmanTree::decodeBinary(string encodedStr) {
 
 	for (int i = 0; i < encodedStr.size(); i++) {
 
+
 		while (byteIterator >= 0) {
 			binMask = 1;
 			binMask <<= byteIterator;
 			byteIterator--;
-			doubleDecoded += ((encodedStr.at(i) & binMask) + 48);
+			doubleDecoded += (((encodedStr.at(i) & binMask) != 0) + 48);
 		}
 
 		byteIterator = (sizeof(char) * 8) - 1;
@@ -663,7 +670,7 @@ string HuffmanTree::doubleEncode(vector<char> rawEncoded)
 
 
 
-	for (int i = 0; i < rawEncoded.size(); i++) {
+	for (; i < rawEncoded.size(); i++) {
 
 		binRep = rawEncoded.at(i) - 48;
 		if (byteIterator < 0) {
@@ -675,6 +682,7 @@ string HuffmanTree::doubleEncode(vector<char> rawEncoded)
 		byte |= binRep;
 		byteIterator--;
 	}
+	doubleEncoded.push_back(byte);
 	return doubleEncoded;
 }
 
@@ -692,19 +700,28 @@ void HuffmanTree::uncompressFile(string compressedFileName,
 	rebuildTree(compressedFile);
 	printTree();
 	stringstream output;
+	stringstream outputTwoIGuessBecauseScrewMeIDFK;
 	string rawData;
+	vector<char> ugh;
 
+	compressedFile.seekg(root->frequency);
 	output << compressedFile.rdbuf();
 
-	rawData = output.str();
+	rawData = decodeBinary(output.str());
 
-	rawData.erase(rawData.begin(), rawData.begin() + root->frequency);
+	for (int i = 0; i < rawData.size(); i++) {
 
+		ugh.push_back(rawData.at(i));
+	}
+
+	output.seekg(0);
 	output.clear();
 
-	output << decodeBinary(rawData);
+	outputTwoIGuessBecauseScrewMeIDFK << decode(ugh);
 
-	uncompressedFile << output.rdbuf();
+	outputTwoIGuessBecauseScrewMeIDFK.seekg(0);
+
+	uncompressedFile << outputTwoIGuessBecauseScrewMeIDFK.rdbuf();
 }
 
 void HuffmanTree::compressFile(string compressToFileName,
