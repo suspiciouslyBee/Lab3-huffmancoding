@@ -1,5 +1,7 @@
-// HuffmanCoding.cpp: unit test for HuffmanTree, part of Lab 3
+// HuffmanCoding.cpp: unit test for HuffmanTree
 // Programmer :June
+
+// WARNING: WILL TAKE SEVERAL MINUTES TO COMPRESS
 
 
 #include <string>
@@ -45,7 +47,7 @@ int main() {
 
 
 
-	//system("pause");  // LAB 3: Should run up to here with the above functions working with chars '1' and '0' 
+	system("pause");  // LAB 3: Should run up to here with the above functions working with chars '1' and '0' 
 						//			instead of making the changes at the binary level
 
 
@@ -66,23 +68,48 @@ int main() {
 	tree2.printCodes();
 
 	////Test 4
-	//cout << "\n\nTest 4\n";
-	//std::ifstream frequencyStream2("20000leagues.txt");
-	//HuffmanTree tree3(frequencyStream2);
-	//tree3.printTree();
-	//tree3.printCodes();
-	//cout << "Code L :" << tree3.getCode('L') << endl;
-	//tree3.compressFile("20000leaguesComp.bin" ,"20000leagues.txt",true);
-	//tree3.uncompressFile("20000leaguesComp.bin", "20000leaguesRebuilt.txt");
-	//tree3.printTree();
-	//tree3.printCodes();
+	cout << "\n\nTest 4\n";
+	std::ifstream frequencyStream2("20000leagues.txt");
+	HuffmanTree tree3(frequencyStream2);
+	tree3.printTree();
+	tree3.printCodes();
+	cout << "Code L :" << tree3.getCode('L') << endl;
+	tree3.compressFile("20000leaguesComp.bin" ,"20000leagues.txt",true);
+	tree3.uncompressFile("20000leaguesComp.bin", "20000leaguesRebuilt.txt");
+	tree3.printTree();
+	tree3.printCodes();
 
 	// Try Other Files
 
 	//// read in text file create string - might be useful
-	//std::ifstream bigtext("20000leagues.txt");
-	//std::string big((std::istreambuf_iterator<char>(bigtext)), 
-	//				   std::istreambuf_iterator<char>());
+	std::ifstream bigtext("20000leagues.txt");
+	std::string big((std::istreambuf_iterator<char>(bigtext)), 
+				   std::istreambuf_iterator<char>());
+
+
+
+	cout << "\n\nTest 5\n";
+	std::ifstream frequencyStream3("Guliver's Travels.txt");
+	HuffmanTree tree4(frequencyStream2);
+	tree4.printTree();
+	tree4.printCodes();
+	cout << "Code L :" << tree4.getCode('L') << endl;
+	tree4.compressFile("Guliver's TravelsComp.bin", "Guliver's Travels.txt", true);
+	tree4.uncompressFile("Guliver's TravelsComp.bin", "Guliver's TravelsRebuilt.txt");
+	tree4.printTree();
+	tree4.printCodes();
+
+	cout << "\n\nTest 6\n";
+	std::ifstream frequencyStream4("HG Wells TimeMachine.txt");
+	HuffmanTree tree5(frequencyStream2);
+	tree5.printTree();
+	tree5.printCodes();
+	cout << "Code L :" << tree5.getCode('L') << endl;
+	tree5.compressFile("HG Wells TimeMachineComp.bin", "HG Wells TimeMachine.txt", true);
+	tree5.uncompressFile("HG Wells TimeMachineComp.bin", "HG Wells TimeMachineRebuilt.txt");
+	tree5.printTree();
+	tree5.printCodes();
+
 
 	cout << endl;
 	system("pause");
